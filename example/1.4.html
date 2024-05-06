@@ -108,11 +108,13 @@
       x: 0,
       deltaX: 0
     }
-
+    const VALID_DISTANCE = 50;
+    const ORIGINAL_LEFT = 8 + '%';
     $('bookface').addEventListener('mousedown', function (ev) {
       Mouse.isDown = true;
       let x = ev.pageX;
       let y = ev.pageY;
+      // 将鼠标点击的起始位置记录下来
       Mouse.x = x;
       console.log('鼠标按下了，坐标：(' + x + ',' + y + ')')
       $('bookface').textContent = '鼠标按下了，坐标：(' + x + ',' + y + ')'
@@ -121,14 +123,13 @@
 
     $('bookface').addEventListener('mousemove', function (ev) {
       ev.preventDefault()
-      if (Mouse.isDown && Math.abs($('bookface').offsetLeft < UI.appWidth / 5)) {
+      if (Mouse.isDown &&
+        Math.abs($('bookface').offsetLeft) < UI.appWidth / 5) {
         let x = ev.pageX;
         let y = ev.pageY;
-        // $('bookface').textContent = '鼠标正在拖动，坐标：(' + x + ',' + y + ')'
         Mouse.deltaX = x - Mouse.x;
-        // $('bookface').style.transform = 'translateX(' + Mouse.deltaX + 'px)';
+
         $('bookface').style.left = $('bookface').offsetLeft + Mouse.deltaX + 'px'
-        Mouse.deltaX = 0;
       }
 
     })
@@ -137,19 +138,24 @@
       Mouse.isDown = false
       let x = ev.pageX;
       let y = ev.pageY;
+      // 设置有效的拖动距离
       $('bookface').textContent = '鼠标松开，坐标：(' + x + ',' + y + ')'
-      // 如果拖动距离大于50px
-      if (Math.abs(Mouse.deltaX) > 50) {
+      // 如果拖动距离大于有效拖动距离
+      if (Math.abs(Mouse.deltaX) > VALID_DISTANCE) {
         $('bookface').textContent = '鼠标松开，这是有效拖动'
-        console.log(Mouse.deltaX)
       }
+      // 复原
+      Mouse.x = 0;
+      Mouse.deltaX = 0;
+      $('bookface').style.left = ORIGINAL_LEFT;
     })
 
-    $('bookface').addEventListener('mousedown', function (ev) {
-      let x = ev.pageX;
-      let y = ev.pageY;
-      console.log('鼠标按下了，坐标：(' + x + ',' + y + ')')
-      $('bookface').textContent = '鼠标按下了，坐标：(' + x + ',' + y + ')'
+    // 当鼠标移开bookface的时候
+    $('bookface').addEventListener('mouseout', function (ev) {
+      // 复原
+        Mouse.x = 0;
+        Mouse.deltaX = 0;
+        $('bookface').style.left = 8 + '%';
     })
     // 封装一个获取元素的方法
     function $(element) {
@@ -193,7 +199,7 @@
      * @param { number } appWidth 设备宽度
      */
     function setAidStyle(appWidth, appHeight) {
-      let aid = document.getElementById('aid');
+      let aid = $('aid');
       if (window.innerWidth <= 1000) {
         aid.style.display = 'none';
       }
