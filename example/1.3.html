@@ -128,12 +128,6 @@
       $('bookface').textContent = '鼠标抬起了，坐标：(' + x + ',' + y + ')'
     })
 
-    $('bookface').addEventListener('mousedown', function (ev) {
-      let x = ev.pageX;
-      let y = ev.pageY;
-      console.log('鼠标按下了，坐标：(' + x + ',' + y + ')')
-      $('bookface').textContent = '鼠标按下了，坐标：(' + x + ',' + y + ')'
-    })
     // 封装一个获取元素的方法
     function $(element) {
       if (typeof element !== 'string'
